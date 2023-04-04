@@ -1,9 +1,9 @@
 <?php
 
-$qq = "";// ta的QQ号
-$sendMail = "";// 发件QQ邮箱
-$sendMailPwd = "";// 邮箱密码；QQ邮箱用的是授权码
-$sendName = "";// 发件人名，随便写，反正是发给自己
+define("QQ", "");// TA的QQ号
+define("MAIL", "");// 发件QQ邮箱
+define("PWD", "");// 邮箱密码；QQ邮箱用的是授权码
+define("NAME", "");// 发件人名，随便写，反正是发给自己
 
 require "./PHPMailer/PHPMailer.php";
 require "./PHPMailer/Exception.php";
@@ -47,13 +47,13 @@ function sendMail($title, $text){
     $phpMaid->CharSet = "utf8";
     $phpMaid->Host = "smtp.qq.com";
     $phpMaid->SMTPAuth = true;
-    $phpMaid->Username = $sendMail;
-    $phpMaid->Password = $sendMailPwd;
+    $phpMaid->Username = MAIL;
+    $phpMaid->Password = PWD;
     $phpMaid->SMTPSecure = "ssl";
     $phpMaid->Port = 465;
-    $phpMaid->setFrom($sendMail, $sendName);
-    $phpMaid->addAddress($sendMail, $sendName);
-    $phpMaid->addReplyTo($sendMail, $sendName);
+    $phpMaid->setFrom(MAIL, NAME);
+    $phpMaid->addAddress(MAIL, NAME);
+    $phpMaid->addReplyTo(MAIL, NAME);
     $phpMaid->Subject = $title;
     $phpMaid->Body = $text; 
     if (!$phpMaid->send()) {
@@ -63,7 +63,7 @@ function sendMail($title, $text){
     }
 }
 
-$url = "https://q2.qlogo.cn/headimg_dl?dst_uin=" . $qq . "&spec=1";
+$url = "https://q2.qlogo.cn/headimg_dl?dst_uin=" . QQ . "&spec=1";
 
 if(!file_exists("./old.jpg")) {
     download("./old.jpg", $url);    
@@ -77,5 +77,5 @@ if (md5_file("./old.jpg") == md5_file("./new.jpg")) {
     log_i("图片不一致，替换，发送邮件");
     download("./old.jpg", $url);
 
-    sendMail("重要邮件提醒", "ta换头像了：" . $url);
+    sendMail("小丑你好", "TA换头像了：" . $url);
 }

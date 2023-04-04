@@ -13,10 +13,10 @@
 修改顶部几行为自己的信息
 
 ```
-$qq = "";// ta的QQ号
-$sendMail = "";// 发件QQ邮箱
-$sendMailPwd = "";// 邮箱密码；QQ邮箱用的是授权码
-$sendName = "";// 发件人名，随便写，反正是发给自己
+define("QQ", "");// TA的QQ号
+define("MAIL", "");// 发件QQ邮箱
+define("PWD", "");// 邮箱密码；QQ邮箱用的是授权码
+define("NAME", "");// 发件人名，随便写，反正是发给自己
 ```
 
 然后自己随便找个方法定时调用这个 php 文件就行了，比如用 crontab
