@@ -41,6 +41,42 @@ function log_i($str) {
     echo date("Y-m-d H:i:s") . " " . $str . "\n";
 }
 
+function getImageHash($file) {
+    list($width, $height) = getimagesize($file);
+    $img = imagecreatefromjpeg($file);
+    $new_img = imagecreatetruecolor(8, 8);
+    imagecopyresampled($new_img, $img, 0, 0, 0, 0, 8, 8, $width, $height);
+    imagefilter($new_img, IMG_FILTER_GRAYSCALE);
+    $colors = array();
+    $sum = 0;
+
+    for ($i = 0; $i < 8; $i++) {
+        for ($j = 0; $j < 8; $j++) {
+            $color = imagecolorat($new_img, $i, $j) & 0xff;
+            $sum += $color;
+            $colors[] = $color;
+        }
+    }
+
+    $avg = $sum / 64;
+    $hash = '';
+    $curr = '';
+    $count = 0;
+    foreach($colors as $color) {
+        if ($color > $avg) {
+            $curr .= '1';
+        } else {
+            $curr .= '0';
+        }
+        $count++;
+        if (!($count % 4)) {
+            $hash .= dechex(bindec($curr));
+            $curr = '';
+        }
+    }
+    return $hash;
+}
+
 function sendMail($title, $text){
     $phpMaid = new PHPMailer();
     $phpMaid->isSMTP();
@@ -71,7 +107,7 @@ if(!file_exists("./old.jpg")) {
 
 download("./new.jpg", $url);
 
-if (md5_file("./old.jpg") == md5_file("./new.jpg")) {
+if (getImageHash("./old.jpg") == getImageHash("./new.jpg")) {
     log_i("图片一致");
 } else {
     log_i("图片不一致，替换，发送邮件");
